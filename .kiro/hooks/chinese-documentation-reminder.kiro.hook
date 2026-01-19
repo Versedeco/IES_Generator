@@ -1,0 +1,13 @@
+{
+  "enabled": true,
+  "name": "Chinese Documentation Reminder",
+  "description": "Reminds the agent to always write documentation, plans, and guides in Chinese",
+  "version": "1",
+  "when": {
+    "type": "promptSubmit"
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "请记住：所有文档（documentation）、计划（plan）和指南（guide）都必须使用中文撰写。请确保你的回复遵循这一要求。"
+  }
+}
