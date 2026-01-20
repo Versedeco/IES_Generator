@@ -23,10 +23,10 @@
 
 ### 1.3 定义数据结构
 - [x] 实现 `SamplingConfig` 数据类
-- [ ] 实现 `SceneValidation` 数据类
-- [ ] 实现 `SamplingResult` 数据类
-- [ ] 实现 `PhotometricData` 数据类
-- [ ] 实现错误类：`KiroError`, `SceneValidationError`, `SamplingError`, `CalibrationError`
+- [x] 实现 `SceneValidation` 数据类
+- [x] 实现 `SamplingResult` 数据类
+- [x] 实现 `PhotometricData` 数据类
+- [x] 实现错误类：`KiroError`, `SceneValidationError`, `SamplingError`, `CalibrationError`
 
 ---
 
