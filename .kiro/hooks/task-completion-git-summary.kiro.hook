@@ -1,0 +1,15 @@
+{
+  "enabled": true,
+  "name": "任务完成后提供 Git 提交摘要",
+  "description": "在每个任务完成后，自动总结 git 提交信息并告知用户",
+  "version": "1",
+  "when": {
+    "type": "agentStop"
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "请检查刚才完成的工作，如果有文件修改，请务必使用中文总结适合的 git 提交信息（commit message）并告诉用户。提交信息应该简洁明了地描述所做的更改"
+  },
+  "workspaceFolderName": "IES_Generator",
+  "shortName": "task-completion-git-summary"
+}

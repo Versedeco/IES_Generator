@@ -9,15 +9,15 @@
 ## 1. 项目设置与基础架构
 
 ### 1.1 创建项目结构
-- [ ] 创建项目根目录 `kiro_ies_generator/`
-- [ ] 创建模块文件：`scene_validator.py`, `sampler.py`, `ies_generator.py`, `output_manager.py`
-- [ ] 创建插件主文件：`__init__.py`（Blender 插件入口）
-- [ ] 创建测试目录 `tests/`
-- [ ] 创建文档目录 `docs/`
+- [x] 创建项目根目录 `kiro_ies_generator/`
+- [x] 创建模块文件：`scene_validator.py`, `sampler.py`, `ies_generator.py`, `output_manager.py`
+- [x] 创建插件主文件：`__init__.py`（Blender 插件入口）
+- [x] 创建测试目录 `tests/`
+- [x] 创建文档目录 `docs/`
 
 ### 1.2 配置开发环境
-- [ ] 编写 `README.md`（项目说明、安装指南）
-- [ ] 创建 `.gitignore`（排除 Blender 临时文件、Python 缓存）
+- [x] 编写 `README.md`（项目说明、安装指南）
+- [x] 创建 `.gitignore`（排除 Blender 临时文件、Python 缓存）
 - [ ] 配置 Blender 插件元数据（`bl_info`）
 - [ ] 设置 Python 导入路径和模块依赖
 

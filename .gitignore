@@ -1,0 +1,88 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Environment
+venv/
+ENV/
+env/
+.venv
+
+# Blender
+*.blend1
+*.blend2
+*.blend3
+*.blend@
+*.blend~
+*.bphys
+*.autosave
+*.crash.txt
+*.log
+
+# Blender Temporary Files
+/tmp/
+*.tmp
+
+# Blender Cache
+blender_cache/
+__pycache__/
+
+# Rendered Output
+*.png
+*.jpg
+*.jpeg
+*.exr
+*.hdr
+*.tiff
+*.tif
+renders/
+output/
+
+# IES Output (optional - uncomment if you want to ignore generated IES files)
+# *.ies
+# *_metadata.json
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.hypothesis/
+
+# Documentation
+docs/_build/
+site/
+
+# OS
+Thumbs.db
+.DS_Store
+desktop.ini
