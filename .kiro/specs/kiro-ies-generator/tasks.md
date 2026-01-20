@@ -19,7 +19,7 @@
 - [x] 编写 `README.md`（项目说明、安装指南）
 - [x] 创建 `.gitignore`（排除 Blender 临时文件、Python 缓存）
 - [x] 配置 Blender 插件元数据（`bl_info`）
-- [ ] 设置 Python 导入路径和模块依赖
+- [x] 设置 Python 导入路径和模块依赖
 
 ### 1.3 定义数据结构
 - [ ] 实现 `SamplingConfig` 数据类
