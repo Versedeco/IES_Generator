@@ -22,7 +22,7 @@
 - [x] 设置 Python 导入路径和模块依赖
 
 ### 1.3 定义数据结构
-- [ ] 实现 `SamplingConfig` 数据类
+- [x] 实现 `SamplingConfig` 数据类
 - [ ] 实现 `SceneValidation` 数据类
 - [ ] 实现 `SamplingResult` 数据类
 - [ ] 实现 `PhotometricData` 数据类
