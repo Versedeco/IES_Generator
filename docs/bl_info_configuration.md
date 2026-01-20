@@ -1,10 +1,14 @@
-# Blender 插件元数据配置 (bl_info)
+# bl_info 配置说明
 
-## 配置概述
+## 概述
 
-`bl_info` 是 Blender 插件的元数据字典，包含插件的基本信息。这些信息会显示在 Blender 的插件管理界面中。
+本文档说明 Kiro IES Generator Blender 插件的 `bl_info` 元数据配置。
 
-## 当前配置
+## bl_info 字典
+
+`bl_info` 是 Blender 插件的元数据字典，包含插件的基本信息。它位于 `kiro_ies_generator/__init__.py` 文件的顶部。
+
+## 配置内容
 
 ```python
 bl_info = {
@@ -13,8 +17,8 @@ bl_info = {
     "version": (1, 0, 0),
     "blender": (3, 6, 0),
     "location": "View3D > Sidebar > IES Generator",
-    "description": "从 Blender 场景生成 IESNA LM-63 标准的 IES 光度学文件，使用 Cycles 物理渲染进行球面采样",
-    "warning": "需要 Cycles 渲染引擎，建议使用 GPU 加速",
+    "description": "从 Blender 场景生成 IESNA LM-63 标准的 IES 光度学文件。支持 Cycles 物理渲染，模拟半透明材质的光学特性",
+    "warning": "需要 Cycles 渲染引擎。推荐使用 GPU 渲染以获得最佳性能",
     "doc_url": "https://github.com/kiro-team/kiro-ies-generator",
     "support": "COMMUNITY",
     "category": "Lighting",
@@ -25,115 +29,94 @@ bl_info = {
 
 ### 必需字段
 
-| 字段 | 类型 | 值 | 说明 |
-|------|------|-----|------|
-| `name` | str | "Kiro IES Generator" | 插件名称，显示在插件列表中 |
-| `author` | str | "Kiro Team" | 插件作者 |
-| `version` | tuple | (1, 0, 0) | 插件版本号 (major, minor, patch) |
-| `blender` | tuple | (3, 6, 0) | 最低支持的 Blender 版本 |
-| `location` | str | "View3D > Sidebar > IES Generator" | 插件在 Blender UI 中的位置 |
-| `description` | str | "从 Blender 场景生成..." | 插件功能描述 |
-| `category` | str | "Lighting" | 插件分类 |
+| 字段 | 类型 | 说明 |
+|------|------|------|
+| `name` | str | 插件名称，显示在 Blender 插件列表中 |
+| `author` | str | 插件作者或团队名称 |
+| `version` | tuple | 插件版本号 (major, minor, patch) |
+| `blender` | tuple | 最低支持的 Blender 版本 (major, minor, patch) |
+| `location` | str | 插件在 Blender UI 中的位置 |
+| `description` | str | 插件功能描述 |
+| `category` | str | 插件分类，用于在插件管理器中分组 |
 
 ### 可选字段
 
-| 字段 | 类型 | 值 | 说明 |
-|------|------|-----|------|
-| `warning` | str | "需要 Cycles 渲染引擎..." | 警告信息，提示用户注意事项 |
-| `doc_url` | str | "https://github.com/..." | 文档链接 |
-| `support` | str | "COMMUNITY" | 支持级别 (OFFICIAL, COMMUNITY, TESTING) |
+| 字段 | 类型 | 说明 |
+|------|------|------|
+| `warning` | str | 警告信息，显示在插件列表中 |
+| `doc_url` | str | 文档链接 |
+| `support` | str | 支持级别：OFFICIAL、COMMUNITY 或 TESTING |
 
-## 版本号说明
+## 版本信息
 
-版本号使用语义化版本控制 (Semantic Versioning)：
+- **插件版本**: 1.0.0
+  - 主版本号 (major): 1
+  - 次版本号 (minor): 0
+  - 修订号 (patch): 0
 
-- **Major (1)**: 主版本号，重大更新或不兼容的 API 变更
-- **Minor (0)**: 次版本号，向后兼容的功能新增
-- **Patch (0)**: 修订号，向后兼容的问题修正
+- **Blender 版本要求**: 3.6.0+
+  - 支持 Blender 3.6.x
+  - 支持 Blender 4.x
 
-当前版本：**1.0.0** (首次发布版本)
+## 分类
 
-## Blender 版本兼容性
+插件分类为 **Lighting**，表示这是一个照明相关的工具。
 
-- **最低版本**: Blender 3.6.0
-- **测试版本**: Blender 3.6.x, 4.x
-- **原因**: 需要 Python 3.10+ 和现代 Cycles 渲染引擎特性
+在 Blender 插件管理器中，用户可以通过以下路径找到插件：
+- Edit > Preferences > Add-ons > Lighting > Kiro IES Generator
 
-## 分类说明
+## 位置
 
-插件分类为 **"Lighting"**，因为：
-- 主要功能是生成光度学文件
-- 与照明设计和渲染相关
-- 在 Blender 插件管理器中归类到照明类别
+插件面板位于：
+- **3D 视图** (View3D)
+- **侧边栏** (Sidebar)
+- **IES Generator** 标签页
+
+用户可以通过以下方式访问：
+1. 在 3D 视图中按 `N` 键打开侧边栏
+2. 点击 "IES Generator" 标签页
 
 ## 警告信息
 
-插件包含警告信息：**"需要 Cycles 渲染引擎，建议使用 GPU 加速"**
+插件显示以下警告信息：
+> 需要 Cycles 渲染引擎。推荐使用 GPU 渲染以获得最佳性能
 
 这提醒用户：
-1. 必须使用 Cycles 渲染引擎（不支持 Eevee）
-2. 建议启用 GPU 加速以提高性能（5-20 倍速度提升）
+- 插件依赖 Cycles 渲染引擎
+- 使用 GPU 渲染可以显著提升性能（5-20 倍速度提升）
 
 ## 支持级别
 
-支持级别设置为 **"COMMUNITY"**，表示：
-- 这是社区开发的插件
+插件的支持级别为 **COMMUNITY**，表示：
+- 这是一个社区支持的插件
 - 不是 Blender 官方插件
-- 由社区提供支持和维护
+- 由社区维护和支持
 
-## 验证清单
+## 验证
 
-- [x] 所有必需字段已配置
-- [x] 版本号格式正确 (三元组)
-- [x] Blender 版本要求正确 (3.6.0+)
-- [x] 分类有效 ("Lighting")
-- [x] 描述清晰准确
-- [x] 包含警告信息
-- [x] 包含文档链接
-- [x] 支持级别已设置
+可以使用以下命令验证 bl_info 配置：
 
-## 在 Blender 中的显示
-
-当用户在 Blender 中打开插件管理器时，会看到：
-
+```bash
+python tests/validate_bl_info.py
 ```
-插件名称: Kiro IES Generator
-作者: Kiro Team
-版本: 1.0.0
-分类: Lighting
-位置: View3D > Sidebar > IES Generator
 
-描述:
-从 Blender 场景生成 IESNA LM-63 标准的 IES 光度学文件，
-使用 Cycles 物理渲染进行球面采样
-
-警告:
-需要 Cycles 渲染引擎，建议使用 GPU 加速
-
-文档: https://github.com/kiro-team/kiro-ies-generator
-支持: COMMUNITY
-```
+验证脚本会检查：
+- 所有必需字段是否存在
+- 字段类型是否正确
+- 版本号格式是否正确
+- 分类是否有效
+- 内容是否符合规范
 
 ## 更新历史
 
 ### 版本 1.0.0 (当前)
 - 初始配置
-- 设置基本元数据
-- 添加警告信息和文档链接
+- 添加完整的描述信息
+- 添加警告信息
 - 设置支持级别为 COMMUNITY
-
-## 未来版本规划
-
-### 版本 1.1.0 (计划)
-- 添加新功能（待定）
-- 性能优化
-
-### 版本 2.0.0 (计划)
-- 重大功能更新
-- 可能的 API 变更
+- 配置文档 URL
 
 ## 参考资料
 
 - [Blender Add-on Tutorial](https://docs.blender.org/manual/en/latest/advanced/scripting/addon_tutorial.html)
-- [Blender Python API](https://docs.blender.org/api/current/index.html)
-- [Semantic Versioning](https://semver.org/)
+- [Blender Python API - bl_info](https://docs.blender.org/api/current/info_overview.html#add-on-metadata)

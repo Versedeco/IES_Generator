@@ -7,7 +7,16 @@ Kiro IES Generator - Blender 插件入口
 作者：Kiro Team
 版本：1.0.0
 Blender 版本：3.6+, 4.x
+
+依赖项：
+- bpy (Blender Python API) - 内置
+- numpy - 内置于 Blender 3.6+
+- math - Python 标准库
 """
+
+# ============================================================================
+# 插件元数据
+# ============================================================================
 
 bl_info = {
     "name": "Kiro IES Generator",
@@ -15,12 +24,89 @@ bl_info = {
     "version": (1, 0, 0),
     "blender": (3, 6, 0),
     "location": "View3D > Sidebar > IES Generator",
-    "description": "从 Blender 场景生成 IESNA LM-63 标准的 IES 光度学文件，使用 Cycles 物理渲染进行球面采样",
-    "warning": "需要 Cycles 渲染引擎，建议使用 GPU 加速",
+    "description": "从 Blender 场景生成 IESNA LM-63 标准的 IES 光度学文件。支持 Cycles 物理渲染，模拟半透明材质的光学特性",
+    "warning": "需要 Cycles 渲染引擎。推荐使用 GPU 渲染以获得最佳性能",
     "doc_url": "https://github.com/kiro-team/kiro-ies-generator",
     "support": "COMMUNITY",
     "category": "Lighting",
 }
+
+# ============================================================================
+# 依赖项检查
+# ============================================================================
+
+def check_dependencies():
+    """
+    检查必需的依赖项是否可用
+    
+    返回:
+        tuple: (is_valid, missing_deps, warnings)
+            - is_valid: bool, 所有必需依赖是否可用
+            - missing_deps: list, 缺失的依赖项列表
+            - warnings: list, 警告信息列表
+    """
+    missing_deps = []
+    warnings = []
+    
+    # 检查 bpy (Blender Python API)
+    try:
+        import bpy
+    except ImportError:
+        missing_deps.append("bpy (Blender Python API)")
+    
+    # 检查 numpy
+    try:
+        import numpy
+        # 检查 numpy 版本
+        numpy_version = tuple(map(int, numpy.__version__.split('.')[:2]))
+        if numpy_version < (1, 20):
+            warnings.append(f"NumPy 版本过低 ({numpy.__version__})，推荐 1.20+")
+    except ImportError:
+        missing_deps.append("numpy")
+    
+    # 检查 math (Python 标准库，应该总是可用)
+    try:
+        import math
+    except ImportError:
+        missing_deps.append("math (Python 标准库)")
+    
+    # 检查 Blender 版本
+    try:
+        import bpy
+        blender_version = bpy.app.version
+        if blender_version < (3, 6, 0):
+            warnings.append(
+                f"Blender 版本 {blender_version[0]}.{blender_version[1]}.{blender_version[2]} "
+                f"低于推荐版本 3.6.0，部分功能可能不可用"
+            )
+    except:
+        pass
+    
+    is_valid = len(missing_deps) == 0
+    return is_valid, missing_deps, warnings
+
+
+# 执行依赖项检查
+DEPENDENCIES_OK, MISSING_DEPENDENCIES, DEPENDENCY_WARNINGS = check_dependencies()
+
+if not DEPENDENCIES_OK:
+    print("=" * 60)
+    print("Kiro IES Generator - 依赖项检查失败")
+    print("=" * 60)
+    print("缺失的依赖项：")
+    for dep in MISSING_DEPENDENCIES:
+        print(f"  - {dep}")
+    print("\n请确保在 Blender 3.6+ 环境中运行此插件")
+    print("=" * 60)
+
+if DEPENDENCY_WARNINGS:
+    print("Kiro IES Generator - 依赖项警告：")
+    for warning in DEPENDENCY_WARNINGS:
+        print(f"  ⚠ {warning}")
+
+# ============================================================================
+# Blender API 导入
+# ============================================================================
 
 import bpy
 from bpy.props import (
@@ -38,15 +124,44 @@ from bpy.types import (
     AddonPreferences,
 )
 
-# 导入核心模块（将在后续任务中实现）
+# ============================================================================
+# 模块导入配置
+# ============================================================================
+
+# 导入 Python 标准库
+import sys
+import os
+from pathlib import Path
+
+# 确保插件目录在 Python 路径中
+# 这对于 Blender 插件开发很重要，确保相对导入正常工作
+addon_dir = Path(__file__).parent
+if str(addon_dir) not in sys.path:
+    sys.path.insert(0, str(addon_dir))
+
+# 导入核心模块
+# 使用 try-except 确保插件在模块未完全实现时也能加载
 try:
     from . import scene_validator
     from . import sampler
     from . import ies_generator
     from . import output_manager
+    
+    # 标记核心模块已成功导入
+    CORE_MODULES_AVAILABLE = True
+    print("Kiro IES Generator: 核心模块已成功导入")
+    
 except ImportError as e:
-    print(f"警告：无法导入核心模块 - {e}")
-    print("插件将以有限功能运行")
+    CORE_MODULES_AVAILABLE = False
+    print(f"Kiro IES Generator 警告：无法导入核心模块 - {e}")
+    print("插件将以有限功能运行，部分功能可能不可用")
+    print("请确保所有模块文件都已正确放置在插件目录中")
+    
+    # 创建占位符模块，避免后续代码出错
+    scene_validator = None
+    sampler = None
+    ies_generator = None
+    output_manager = None
 
 
 # ============================================================================
@@ -165,6 +280,19 @@ class KIRO_OT_GenerateIES(Operator):
         """执行 IES 生成"""
         props = context.scene.kiro_ies_props
         
+        # 检查核心模块是否可用
+        if not CORE_MODULES_AVAILABLE:
+            self.report({'ERROR'}, "核心模块未加载，无法执行 IES 生成")
+            self.report({'ERROR'}, "请检查插件安装是否完整")
+            return {'CANCELLED'}
+        
+        # 检查依赖项
+        if not DEPENDENCIES_OK:
+            self.report({'ERROR'}, "依赖项检查失败")
+            for dep in MISSING_DEPENDENCIES:
+                self.report({'ERROR'}, f"缺失依赖: {dep}")
+            return {'CANCELLED'}
+        
         # 验证场景
         self.report({'INFO'}, "开始场景验证...")
         
@@ -172,7 +300,7 @@ class KIRO_OT_GenerateIES(Operator):
         # 这将在后续任务中实现
         
         # 临时占位符逻辑
-        self.report({'WARNING'}, "核心模块尚未实现，这是占位符执行")
+        self.report({'WARNING'}, "核心功能尚未实现，这是占位符执行")
         props.status_message = "等待核心模块实现"
         
         return {'FINISHED'}
@@ -253,6 +381,11 @@ class KIRO_OT_ValidateScene(Operator):
     def execute(self, context):
         """执行场景验证"""
         
+        # 检查核心模块是否可用
+        if not CORE_MODULES_AVAILABLE:
+            self.report({'ERROR'}, "核心模块未加载，无法执行场景验证")
+            return {'CANCELLED'}
+        
         # TODO: 调用 scene_validator.validate_scene()
         # 这将在后续任务中实现
         
@@ -278,10 +411,38 @@ class KIRO_PT_IESGenerator(Panel):
         layout = self.layout
         props = context.scene.kiro_ies_props
         
+        # 显示依赖项状态（如果有问题）
+        if not DEPENDENCIES_OK or not CORE_MODULES_AVAILABLE:
+            box = layout.box()
+            box.alert = True
+            box.label(text="插件状态异常", icon='ERROR')
+            
+            if not DEPENDENCIES_OK:
+                box.label(text="缺失依赖项：", icon='CANCEL')
+                for dep in MISSING_DEPENDENCIES:
+                    box.label(text=f"  • {dep}")
+            
+            if not CORE_MODULES_AVAILABLE:
+                box.label(text="核心模块未加载", icon='CANCEL')
+                box.label(text="请检查插件安装")
+            
+            layout.separator()
+        
+        # 显示依赖项警告
+        if DEPENDENCY_WARNINGS:
+            box = layout.box()
+            box.label(text="警告", icon='ERROR')
+            for warning in DEPENDENCY_WARNINGS:
+                row = box.row()
+                row.label(text=warning, icon='INFO')
+            layout.separator()
+        
         # 场景验证部分
         box = layout.box()
         box.label(text="场景验证", icon='CHECKMARK')
-        box.operator("kiro.validate_scene", text="验证场景")
+        row = box.row()
+        row.enabled = CORE_MODULES_AVAILABLE
+        row.operator("kiro.validate_scene", text="验证场景")
         
         # 采样参数部分
         box = layout.box()
@@ -320,7 +481,11 @@ class KIRO_PT_IESGenerator(Panel):
         row = layout.row(align=True)
         row.scale_y = 1.5
         
-        if props.is_running:
+        # 如果核心模块或依赖项不可用，禁用按钮
+        if not CORE_MODULES_AVAILABLE or not DEPENDENCIES_OK:
+            row.enabled = False
+            row.operator("kiro.generate_ies", text="无法生成（缺少依赖）", icon='CANCEL')
+        elif props.is_running:
             row.enabled = False
             row.operator("kiro.generate_ies", text="生成中...", icon='TIME')
         else:
@@ -357,24 +522,56 @@ classes = (
 
 def register():
     """注册插件"""
+    # 检查依赖项
+    if not DEPENDENCIES_OK:
+        print("=" * 60)
+        print("Kiro IES Generator - 注册失败")
+        print("=" * 60)
+        print("缺失的依赖项：")
+        for dep in MISSING_DEPENDENCIES:
+            print(f"  - {dep}")
+        print("\n插件将不会注册。请在 Blender 3.6+ 环境中运行")
+        print("=" * 60)
+        return
+    
     # 注册所有类
     for cls in classes:
-        bpy.utils.register_class(cls)
+        try:
+            bpy.utils.register_class(cls)
+        except Exception as e:
+            print(f"注册类 {cls.__name__} 失败: {e}")
+            # 继续注册其他类
     
     # 将属性组添加到场景
     bpy.types.Scene.kiro_ies_props = PointerProperty(type=KiroIESProperties)
     
+    print("=" * 60)
     print("Kiro IES Generator 插件已注册")
+    print(f"版本: {bl_info['version'][0]}.{bl_info['version'][1]}.{bl_info['version'][2]}")
+    print(f"核心模块状态: {'✓ 已加载' if CORE_MODULES_AVAILABLE else '✗ 未加载'}")
+    print(f"依赖项状态: {'✓ 正常' if DEPENDENCIES_OK else '✗ 异常'}")
+    
+    if DEPENDENCY_WARNINGS:
+        print("\n警告：")
+        for warning in DEPENDENCY_WARNINGS:
+            print(f"  ⚠ {warning}")
+    
+    print("=" * 60)
 
 
 def unregister():
     """注销插件"""
     # 删除场景属性
-    del bpy.types.Scene.kiro_ies_props
+    if hasattr(bpy.types.Scene, 'kiro_ies_props'):
+        del bpy.types.Scene.kiro_ies_props
     
     # 注销所有类（逆序）
     for cls in reversed(classes):
-        bpy.utils.unregister_class(cls)
+        try:
+            bpy.utils.unregister_class(cls)
+        except Exception as e:
+            print(f"注销类 {cls.__name__} 失败: {e}")
+            # 继续注销其他类
     
     print("Kiro IES Generator 插件已注销")
 
