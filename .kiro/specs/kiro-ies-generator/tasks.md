@@ -33,13 +33,13 @@
 ## 2. 场景验证器模块（scene_validator.py）
 
 ### 2.1 实现场景验证核心功能
-- [ ] 实现 `validate_scene()` - 验证当前场景配置
-- [ ] 实现 `get_light_sources()` - 获取场景中所有光源
-- [ ] 实现 `validate_light_source()` - 验证光源类型（点光源/面光源）
-- [ ] 实现 `check_render_engine()` - 检查渲染引擎是否为 Cycles
-- [ ] 实现 `get_light_properties()` - 获取光源属性（位置、强度、类型）
-- [ ] 实现 `calculate_photometric_center()` - 计算多个光源的光度中心（几何中心）
-- [ ] 实现 `get_fixture_origin()` - 获取灯具模型的原点位置
+- [x] 实现 `validate_scene()` - 验证当前场景配置
+- [x] 实现 `get_light_sources()` - 获取场景中所有光源
+- [x] 实现 `validate_light_source()` - 验证光源类型（点光源/面光源）
+- [x] 实现 `check_render_engine()` - 检查渲染引擎是否为 Cycles
+- [x] 实现 `get_light_properties()` - 获取光源属性（位置、强度、类型）
+- [x] 实现 `calculate_photometric_center()` - 计算多个光源的光度中心（几何中心）
+- [x] 实现 `get_fixture_origin()` - 获取灯具模型的原点位置
 
 ### 2.2 错误处理与验证
 - [ ] 实现场景无光源的错误检测
