@@ -15,9 +15,10 @@ bl_info = {
     "version": (1, 0, 0),
     "blender": (3, 6, 0),
     "location": "View3D > Sidebar > IES Generator",
-    "description": "从 Blender 场景生成 IESNA LM-63 标准的 IES 光度学文件",
-    "warning": "",
+    "description": "从 Blender 场景生成 IESNA LM-63 标准的 IES 光度学文件，使用 Cycles 物理渲染进行球面采样",
+    "warning": "需要 Cycles 渲染引擎，建议使用 GPU 加速",
     "doc_url": "https://github.com/kiro-team/kiro-ies-generator",
+    "support": "COMMUNITY",
     "category": "Lighting",
 }
 
