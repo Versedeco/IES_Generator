@@ -95,6 +95,13 @@ def validate_scene() -> SceneValidation:
     # 过滤掉不支持的光源
     supported_lights = [light for light in light_objects if validate_light_source(light)]
     
+    # 多光源场景提示
+    if len(supported_lights) > 1:
+        warnings.append(
+            f"检测到 {len(supported_lights)} 个光源，将进行综合测量\n"
+            f"光度中心将自动计算为所有光源的几何中心"
+        )
+    
     # 检查场景单位
     unit_system = bpy.context.scene.unit_settings.system
     if unit_system != 'METRIC':
